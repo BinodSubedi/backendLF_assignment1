@@ -6,8 +6,8 @@ const todoRouter = Router();
 todoRouter.get('/',getTodoList);
 todoRouter.post('/',postTodoList);
 todoRouter.put('/',putTodoList);
-todoRouter.delete('/',deleteTodoList);
-todoRouter.patch('/',patchTodoList)
+todoRouter.delete('/:id',deleteTodoList);
+todoRouter.patch('/:id',patchTodoList)
 
 
 export default todoRouter;
