@@ -1,6 +1,7 @@
-import { SchemaError } from "../utils/error";
+import { todo } from "node:test";
+import { SchemaError, TodoUpdateError } from "../utils/error";
 
-interface TODOElement {
+export interface TODOElement {
   id?: number;
   title: string;
   description: string;
@@ -34,6 +35,24 @@ const modelEnforcer = (valCheck: TODOElement) => {
   }
 };
 
+export const idExists = (id: number): [boolean, TODOElement?] => {
+  const value = todoContainer.filter((el) => el.id == id);
+
+  if (value.length == 0) {
+    return [false];
+  }
+
+  return [true, value[0]];
+};
+
+export const updateTodo = (id: number, updatedElement: TODOElement) => {
+  todoContainer.forEach((el, index, arr) => {
+    if (el.id == id) {
+      arr[index] = updatedElement;
+    }
+  });
+};
+
 export const addOneTodo = (todoVal: TODOElement) => {
   //Integrity Check
 
@@ -52,6 +71,21 @@ export const addOneTodo = (todoVal: TODOElement) => {
     todoContainer.push(valCheck);
   } catch (err) {
     throw err;
+  }
+};
+
+export const removeOneTodo = (id: number): boolean => {
+  try {
+    for (let i = 0; i < todoContainer.length; i++) {
+      if (todoContainer[i].id == id) {
+        todoContainer.splice(i, 1);
+        return true;
+      }
+    }
+
+    return false;
+  } catch (err) {
+    throw new TodoUpdateError("remove one error");
   }
 };
 
