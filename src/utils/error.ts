@@ -37,10 +37,32 @@ export class TodoCreateError extends GlobalError {
   }
 }
 
+export class CreateError extends GlobalError {
+  constructor(
+    name: string,
+    message: string = "Create Error",
+    statusCode: number = 500,
+    stack?: string
+  ) {
+    super(name, message, statusCode, stack);
+  }
+}
+
 export class TodoUpdateError extends GlobalError {
   constructor(
     name: string,
     message: string = "Todo Update Error",
+    statusCode: number = 500,
+    stack?: string
+  ) {
+    super(name, message, statusCode, stack);
+  }
+}
+
+export class UpdateError extends GlobalError {
+  constructor(
+    name: string,
+    message: string = "Update Error",
     statusCode: number = 500,
     stack?: string
   ) {
@@ -59,10 +81,32 @@ export class TodoReadError extends GlobalError {
   }
 }
 
+export class ReadError extends GlobalError {
+  constructor(
+    name: string,
+    message: string = "Read Error",
+    statusCode: number = 500,
+    stack?: string
+  ) {
+    super(name, message, statusCode, stack);
+  }
+}
+
 export class TodoDeleteError extends GlobalError {
   constructor(
     name: string,
     message: string = "Todo Delete Error",
+    statusCode: number = 500,
+    stack?: string
+  ) {
+    super(name, message, statusCode, stack);
+  }
+}
+
+export class DeleteError extends GlobalError {
+  constructor(
+    name: string,
+    message: string = "Delete Error",
     statusCode: number = 500,
     stack?: string
   ) {
