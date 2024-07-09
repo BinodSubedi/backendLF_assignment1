@@ -1,10 +1,14 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
-dotenv.config()
-
+dotenv.config();
 
 const env = {
-    port: process.env.PORT
-}
+  port: process.env.PORT,
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    accessTokenExpiry: "1h",
+    refreshTokenExpiry: "2d",
+  },
+};
 
 export default env;

@@ -22,7 +22,21 @@ export const createUserController = async (
 export const loginUserController = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-    const loginBool = loginUserService({ username, password });
+    const loginBool = await loginUserService({ username, password });
+
+    if (loginBool[0]) {
+      return res.status(200).json({
+        status: "success",
+        message: "login success",
+        refreshToken: loginBool[1],
+        accessToken: loginBool[2],
+      });
+    }
+
+    return res.status(400).json({
+      status: "fail",
+      message: "Wrong credentials",
+    });
   } catch (err) {
     throw err;
   }

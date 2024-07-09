@@ -1,3 +1,6 @@
+import jwt from "jsonwebtoken";
+import env from "./../config";
+
 import {
   createNewUser,
   getUserByUsername,
@@ -26,6 +29,24 @@ export const loginUserService = async (data: {
 
   if (await passwordComparer(data.password, requiredUser!.password)) {
     // Create access and refresh token here
+
+    const accessToken = jwt.sign(
+      { id: requiredUser.id },
+      env.jwt.secret!.toString(),
+      {
+        expiresIn: env.jwt.accessTokenExpiry,
+      }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: requiredUser.id },
+      env.jwt.secret!.toString(),
+      {
+        expiresIn: env.jwt.refreshTokenExpiry,
+      }
+    );
+
+    return [true, refreshToken, accessToken];
   }
   return [false];
 };
