@@ -4,21 +4,21 @@ import {
   finishTodo,
   getTodoList,
   postTodoList,
-  updateDescription,
   updateTitle,
   putTodoList,
+  getTodoById,
 } from "../controller/todo";
 
 const todoRouter = Router();
 
 todoRouter.get("/", getTodoList);
+// get todo by id
+todoRouter.get("/:id", getTodoById);
 todoRouter.post("/", postTodoList);
 todoRouter.put("/", putTodoList);
 todoRouter.delete("/:id", deleteTodoList);
 //finished Task route
 todoRouter.patch("/finish/:id", finishTodo);
-//update title and description in two different routes
 todoRouter.patch("/:id", updateTitle);
-todoRouter.patch("':id", updateDescription);
 
 export default todoRouter;

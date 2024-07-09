@@ -12,12 +12,12 @@ export interface TODOElement {
 
 const todoContainer: TODOElement[] = [];
 
-const modelEnforcer = (valCheck: TODOElement) => {
+export const modelEnforcer = (valCheck: TODOElement) => {
   try {
     const values = Object.values(valCheck);
 
     Object.keys(valCheck).map((el, i) => {
-      console.log(`${el}::${values[i]}`);
+      // console.log(`${el}::${values[i]}`);
 
       if (
         el == "title" ||
@@ -53,6 +53,10 @@ export const updateTodo = (id: number, updatedElement: TODOElement) => {
   });
 };
 
+export const getContLen = (): number => {
+  return todoContainer.length;
+};
+
 export const addOneTodo = (todoVal: TODOElement) => {
   //Integrity Check
 
@@ -74,6 +78,14 @@ export const addOneTodo = (todoVal: TODOElement) => {
   }
 };
 
+export const addManyAfterCheck = (data: TODOElement[]) => {
+  try {
+    todoContainer.push(...data);
+  } catch (err) {
+    throw new TodoUpdateError("Add many error");
+  }
+};
+
 export const removeOneTodo = (id: number): boolean => {
   try {
     for (let i = 0; i < todoContainer.length; i++) {
@@ -90,6 +102,5 @@ export const removeOneTodo = (id: number): boolean => {
 };
 
 export const getAllTodo = () => {
-  console.log(todoContainer);
   return todoContainer;
 };
