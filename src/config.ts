@@ -7,7 +7,7 @@ const env = {
   jwt: {
     secret: process.env.JWT_SECRET,
     accessTokenExpiry: "1hr",
-    refreshTokenExpiry: 3000,
+    refreshTokenExpiry: "3d",
   },
 };
 

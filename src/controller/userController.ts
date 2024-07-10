@@ -3,7 +3,9 @@ import {
   createUserService,
   loginUserService,
   refreshUserTokenService,
+  updateUserPasswordService,
 } from "../services/userService";
+import { getUserById, updateUserById } from "../model/userModel";
 
 export const createUserController = async (
   req: Request,
@@ -76,12 +78,29 @@ export const tokenRefreshController = async (
   }
 };
 
-export const updateUserPassword = async (
+export const updateUserPasswordController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const { id, password } = req.body;
+
+    const requiredUser = getUserById(id);
+
+    if (requiredUser == undefined) {
+      return res.status(400).json({
+        status: "fail",
+        message: "User not found",
+      });
+    }
+
+    updateUserPasswordService(id, password, requiredUser);
+
+    return res.status(201).json({
+      status: "success",
+      message: "password Updated",
+    });
   } catch (err) {
     next(err);
   }

@@ -1,5 +1,6 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import env from "./../config";
+import bcrypt from "bcrypt";
 
 import {
   createNewUser,
@@ -67,8 +68,6 @@ export const refreshUserTokenService = async (
 
     const userExistingdata = getUserById(decoded.id);
 
-    console.log(userExistingdata);
-
     if (userExistingdata?.refreshToken != refreshToken) {
       throw new UpdateError("Wrong refresh token");
     }
@@ -88,5 +87,18 @@ export const refreshUserTokenService = async (
     return newRefreshToken;
   } catch (err) {
     throw err;
+  }
+};
+
+export const updateUserPasswordService = async (
+  id: number,
+  password: string,
+  requiredUser: User
+) => {
+  try {
+    requiredUser.password = await bcrypt.hash(password, 10);
+    updateUserById(id, requiredUser);
+  } catch (err) {
+    throw new UpdateError("User password update error");
   }
 };
