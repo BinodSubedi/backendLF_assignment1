@@ -1,12 +1,15 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import env from "./../config";
 
 import {
   createNewUser,
+  getUserById,
   getUserByUsername,
   passwordComparer,
+  updateUserById,
   User,
 } from "../model/userModel";
+import { UpdateError } from "../utils/error";
 
 export const createUserService = (data: User) => {
   try {
@@ -46,7 +49,44 @@ export const loginUserService = async (data: {
       }
     );
 
+    // setting up refreshToken in the storage for later verification
+    requiredUser.refreshToken = refreshToken;
+    updateUserById(requiredUser.id!, requiredUser);
+
     return [true, refreshToken, accessToken];
   }
   return [false];
+};
+
+export const refreshUserTokenService = async (
+  refreshToken: string
+): Promise<string> => {
+  try {
+    const decoded: any = jwt.decode(refreshToken);
+    // console.log(decoded.id);
+
+    const userExistingdata = getUserById(decoded.id);
+
+    console.log(userExistingdata);
+
+    if (userExistingdata?.refreshToken != refreshToken) {
+      throw new UpdateError("Wrong refresh token");
+    }
+
+    const newRefreshToken = await jwt.sign(
+      {
+        id: decoded.id,
+      },
+      env.jwt.secret!.toString(),
+      {
+        expiresIn: env.jwt.refreshTokenExpiry,
+      }
+    );
+
+    userExistingdata!.refreshToken = newRefreshToken;
+    updateUserById(decoded.id, userExistingdata!);
+    return newRefreshToken;
+  } catch (err) {
+    throw err;
+  }
 };

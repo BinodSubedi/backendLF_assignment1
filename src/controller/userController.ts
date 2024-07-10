@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { createUserService, loginUserService } from "../services/userService";
+import {
+  createUserService,
+  loginUserService,
+  refreshUserTokenService,
+} from "../services/userService";
 
 export const createUserController = async (
   req: Request,
@@ -19,7 +23,11 @@ export const createUserController = async (
   }
 };
 
-export const loginUserController = async (req: Request, res: Response) => {
+export const loginUserController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { username, password } = req.body;
     const loginBool = await loginUserService({ username, password });
@@ -38,6 +46,43 @@ export const loginUserController = async (req: Request, res: Response) => {
       message: "Wrong credentials",
     });
   } catch (err) {
-    throw err;
+    next(err);
+  }
+};
+
+export const tokenRefreshController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (refreshToken == undefined) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Bad request",
+      });
+    }
+
+    const newToken = await refreshUserTokenService(refreshToken);
+
+    return res.status(200).json({
+      status: "success",
+      newRefreshToken: newToken,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateUserPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  } catch (err) {
+    next(err);
   }
 };

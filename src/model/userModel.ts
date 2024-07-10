@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { CreateError, SchemaError } from "../utils/error";
+import { CreateError, SchemaError, UpdateError } from "../utils/error";
 
 export interface User {
   id?: number;
@@ -7,6 +7,7 @@ export interface User {
   gender: string;
   email: string;
   password: string;
+  refreshToken?: string | null;
 }
 
 const userContainer: User[] = [];
@@ -73,10 +74,41 @@ export const getUserByUsername = (username: string): User | undefined => {
   const user = userContainer.filter((el) => el.username == username);
 
   if (user.length == 1) {
+    user[0].refreshToken = null;
     return user[0];
   }
 
   return undefined;
+};
+
+export const getUserById = (id: number) => {
+  const user = userContainer.filter((el) => el.id == id);
+
+  if (user.length == 1) {
+    return user[0];
+  }
+
+  return undefined;
+};
+
+export const updateUserById = (id: number, updateStruct: User) => {
+  try {
+    userSchemaEnforcer(updateStruct);
+    try {
+      for (let i = 0; i < userContainer.length; i++) {
+        if (userContainer[i].id == id) {
+          userContainer[i] = updateStruct;
+          break;
+        }
+      }
+      // console.log(userContainer);
+      return;
+    } catch (err) {
+      throw new UpdateError("User update error");
+    }
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const createNewUser = async (data: User): Promise<User> => {
