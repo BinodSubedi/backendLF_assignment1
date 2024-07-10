@@ -1,5 +1,7 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "prettier.requireConfig": true
+  "prettier.requireConfig": true,
+  "vim.useSystemClipboard": true,
+  "vim.overrideCopy": true
 }
