@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
+  adminDeleteUser,
   createUserService,
   getAllUserService,
   loginUserService,
@@ -128,6 +129,39 @@ export const getAllUser = (req: Request, res: Response, next: NextFunction) => {
     res.status(StatusCodes.OK).json({
       total: data.length,
       users: data,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteUserController = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { userId } = req.body;
+    const { id } = req.params;
+
+    if (userId == id) {
+      return res.status(400).json({
+        message: "Forbidden action, can't delete admin",
+      });
+    }
+
+    const supposiveAdmin = getUserById(userId);
+
+    if (supposiveAdmin?.accessLevel != UserAccessLevel.SuperUser) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message: "Un-authorized request",
+      });
+    }
+
+    adminDeleteUser(parseInt(id));
+
+    res.status(StatusCodes.OK).json({
+      message: "User deleted",
     });
   } catch (err) {
     next(err);

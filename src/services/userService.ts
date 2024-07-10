@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 
 import {
   createNewUser,
+  deleteUser,
   getAllUsersModel,
   getUserById,
   getUserByUsername,
@@ -12,7 +13,7 @@ import {
   User,
   UserAccessLevel,
 } from "../model/userModel";
-import { UpdateError } from "../utils/error";
+import { DeleteError, UpdateError } from "../utils/error";
 
 export const createUserService = (data: User) => {
   try {
@@ -113,4 +114,11 @@ export const getAllUserService = (userId: number): User[] | undefined => {
   }
 
   return getAllUsersModel();
+};
+
+export const adminDeleteUser = (deleteId: number) => {
+  const deleteBool = deleteUser(deleteId);
+  if (!deleteBool) {
+    throw new DeleteError("User Delete Error");
+  }
 };

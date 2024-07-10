@@ -148,3 +148,14 @@ export const createNewUser = async (data: User): Promise<User> => {
 export const getAllUsersModel = () => {
   return userContainer;
 };
+
+export const deleteUser = (deleteId: number) => {
+  for (let i = 0; i < userContainer.length; i++) {
+    if (userContainer[i].id == deleteId) {
+      userContainer.splice(i, 1);
+      return true;
+    }
+  }
+
+  return false;
+};

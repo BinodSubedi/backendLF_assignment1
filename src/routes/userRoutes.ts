@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createUserController,
+  deleteUserController,
   getAllUser,
   loginUserController,
   tokenRefreshController,
@@ -20,6 +21,7 @@ userRouter.post("/refresh", tokenRefreshController);
 
 //Making routes that are only accesible for admin
 userAuthRouter.get("/getUsers", auth, getAllUser);
-userAuthRouter.delete("/deleteUser/:id", auth);
+userAuthRouter.delete("/deleteUser/:id", auth, deleteUserController);
+userAuthRouter.patch("/updatePassword/:id", auth);
 
 userAuthRouter.patch("/updatePassword", auth, updateUserPasswordController);
