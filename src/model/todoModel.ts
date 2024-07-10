@@ -3,6 +3,7 @@ import { SchemaError, TodoUpdateError } from "../utils/error";
 
 export interface TODOElement {
   id?: number;
+  userId: number;
   title: string;
   description: string;
   finished: boolean;
@@ -23,7 +24,8 @@ export const modelEnforcer = (valCheck: TODOElement) => {
         el == "title" ||
         el == "description" ||
         el == "finished" ||
-        el == "created_at"
+        el == "created_at" ||
+        el == "userId"
       ) {
         if (values[i] == undefined || values[i] == null) {
           throw new SchemaError();
@@ -68,6 +70,7 @@ export const addOneTodo = (todoVal: TODOElement) => {
       finished: false,
       created_at: new Date(),
       finished_at: null,
+      userId: todoVal.userId,
     };
 
     modelEnforcer(valCheck);

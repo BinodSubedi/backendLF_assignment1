@@ -25,11 +25,20 @@ export const finishTodoService = (id: number): boolean => {
   }
 };
 
-export const updateTodoTitleService = (id: number, title: string): boolean => {
+export const updateTodoTitleService = (
+  id: number,
+  title: string,
+  userId: number
+): boolean => {
   try {
     const existCheck = idExists(id);
     if (existCheck[0]) {
       const val: TODOElement | undefined = existCheck[1];
+
+      if (val?.userId != userId) {
+        return false;
+      }
+
       val!.title = title;
       updateTodo(id, val!);
       return true;
@@ -58,11 +67,17 @@ export const deleteTodoService = (id: number): boolean => {
   }
 };
 
-export const getOneTodoService = (id: number): TODOElement | undefined => {
+export const getOneTodoService = (
+  id: number,
+  userId: number
+): TODOElement | undefined => {
   try {
     const existCheck = idExists(id);
 
     if (existCheck[0]) {
+      if (existCheck[1]?.userId != userId) {
+        return;
+      }
       return existCheck[1];
     }
   } catch (err) {
@@ -70,7 +85,7 @@ export const getOneTodoService = (id: number): TODOElement | undefined => {
   }
 };
 
-export const postTodoService = (data: TODOElement[]) => {
+export const postTodoService = (data: TODOElement[], userId: number) => {
   try {
     const buffContainer = [];
 
@@ -82,6 +97,7 @@ export const postTodoService = (data: TODOElement[]) => {
         finished: false,
         created_at: new Date(),
         finished_at: null,
+        userId,
       };
 
       modelEnforcer(valCheck);

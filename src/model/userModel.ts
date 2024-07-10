@@ -1,6 +1,11 @@
 import bcrypt from "bcrypt";
 import { CreateError, SchemaError, UpdateError } from "../utils/error";
 
+export enum UserAccessLevel {
+  SuperUser,
+  normal,
+}
+
 export interface User {
   id?: number;
   username: string;
@@ -8,9 +13,22 @@ export interface User {
   email: string;
   password: string;
   refreshToken?: string | null;
+  accessLevel?: UserAccessLevel;
 }
 
 const userContainer: User[] = [];
+
+export const userContainerSuperUserInit = async () => {
+  userContainer.push({
+    id: 1,
+    username: "Admin",
+    gender: "male",
+    email: "admin@gmail.com",
+    password: await bcrypt.hash("admin", 10),
+    refreshToken: null,
+    accessLevel: UserAccessLevel.SuperUser,
+  });
+};
 
 const userSchemaEnforcer = (data: User) => {
   try {
@@ -57,6 +75,7 @@ const userSchemaMapper = async (data: User): Promise<User> => {
       gender: data.gender,
       email: data.email,
       password: await hashPassword(data.password),
+      accessLevel: data.accessLevel || UserAccessLevel.normal,
     };
   } catch (err) {
     throw err;
@@ -124,4 +143,8 @@ export const createNewUser = async (data: User): Promise<User> => {
   } catch (err) {
     throw err;
   }
+};
+
+export const getAllUsersModel = () => {
+  return userContainer;
 };

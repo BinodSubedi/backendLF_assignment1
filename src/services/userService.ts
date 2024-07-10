@@ -4,11 +4,13 @@ import bcrypt from "bcrypt";
 
 import {
   createNewUser,
+  getAllUsersModel,
   getUserById,
   getUserByUsername,
   passwordComparer,
   updateUserById,
   User,
+  UserAccessLevel,
 } from "../model/userModel";
 import { UpdateError } from "../utils/error";
 
@@ -101,4 +103,14 @@ export const updateUserPasswordService = async (
   } catch (err) {
     throw new UpdateError("User password update error");
   }
+};
+
+export const getAllUserService = (userId: number): User[] | undefined => {
+  const user = getUserById(userId);
+
+  if (user?.accessLevel != UserAccessLevel.SuperUser) {
+    return;
+  }
+
+  return getAllUsersModel();
 };

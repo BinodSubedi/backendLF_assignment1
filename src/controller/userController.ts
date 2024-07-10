@@ -1,11 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import {
   createUserService,
+  getAllUserService,
   loginUserService,
   refreshUserTokenService,
   updateUserPasswordService,
 } from "../services/userService";
-import { getUserById, updateUserById } from "../model/userModel";
+import {
+  getAllUsersModel,
+  getUserById,
+  updateUserById,
+  UserAccessLevel,
+} from "../model/userModel";
+import { StatusCodes } from "http-status-codes";
 
 export const createUserController = async (
   req: Request,
@@ -84,9 +91,9 @@ export const updateUserPasswordController = async (
   next: NextFunction
 ) => {
   try {
-    const { id, password } = req.body;
+    const { userId, password } = req.body;
 
-    const requiredUser = getUserById(id);
+    const requiredUser = getUserById(userId);
 
     if (requiredUser == undefined) {
       return res.status(400).json({
@@ -95,11 +102,32 @@ export const updateUserPasswordController = async (
       });
     }
 
-    updateUserPasswordService(id, password, requiredUser);
+    updateUserPasswordService(userId, password, requiredUser);
 
     return res.status(201).json({
       status: "success",
       message: "password Updated",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getAllUser = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body;
+
+    const data = getAllUserService(userId);
+
+    if (data == undefined) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message: "Un-authorized request",
+      });
+    }
+
+    res.status(StatusCodes.OK).json({
+      total: data.length,
+      users: data,
     });
   } catch (err) {
     next(err);
