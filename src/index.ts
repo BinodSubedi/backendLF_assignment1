@@ -3,6 +3,7 @@ import env from "./config";
 import { GlobalError } from "./utils/error";
 import router from "./routes";
 import { userContainerSuperUserInit } from "./model/userModel";
+import loggerWithNameSpace from "./utils/logger";
 
 const app = express();
 app.use(express.json());
@@ -18,6 +19,8 @@ app.use((req: Request, res: Response) => {
 
 //Global Error Handler
 app.use((err: GlobalError, req: Request, res: Response, next: NextFunction) => {
+  const logger = loggerWithNameSpace("Error handler");
+  logger.error(err.name);
   res.status(err.statusCode).json({
     status: "fail",
     message: err.message,
