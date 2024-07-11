@@ -9,6 +9,13 @@ app.use(express.json());
 
 app.use("/api", router);
 
+//Fall back route handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
+});
+
 //Global Error Handler
 app.use((err: GlobalError, req: Request, res: Response, next: NextFunction) => {
   res.status(err.statusCode).json({

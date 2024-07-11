@@ -116,9 +116,31 @@ export const getAllUserService = (userId: number): User[] | undefined => {
   return getAllUsersModel();
 };
 
-export const adminDeleteUser = (deleteId: number) => {
+export const adminDeleteUserService = (deleteId: number) => {
   const deleteBool = deleteUser(deleteId);
   if (!deleteBool) {
     throw new DeleteError("User Delete Error");
   }
+};
+
+export const adminUserPasswordUpdateService = (
+  id: number,
+  adminId: number,
+  password: string
+) => {
+  const admin = getUserById(adminId);
+
+  if (admin?.accessLevel != UserAccessLevel.SuperUser) {
+    throw new UpdateError("Un-authorized request");
+  }
+
+  const user = getUserById(id);
+
+  if (user == undefined) {
+    throw new UpdateError("User not found");
+  }
+
+  user.password = password;
+
+  updateUserById(id, user);
 };

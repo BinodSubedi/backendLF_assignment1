@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import {
-  adminDeleteUser,
+  adminDeleteUserService,
+  adminUserPasswordUpdateService,
   createUserService,
   getAllUserService,
   loginUserService,
@@ -158,10 +159,29 @@ export const deleteUserController = (
       });
     }
 
-    adminDeleteUser(parseInt(id));
+    adminDeleteUserService(parseInt(id));
 
     res.status(StatusCodes.OK).json({
       message: "User deleted",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const adminUserPasswordUpdate = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.params;
+    const { password, userId } = req.body;
+
+    adminUserPasswordUpdateService(parseInt(id), userId, password);
+
+    res.status(StatusCodes.OK).json({
+      message: "User Password updated",
     });
   } catch (err) {
     next(err);
