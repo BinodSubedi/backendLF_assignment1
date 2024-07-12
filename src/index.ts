@@ -4,8 +4,21 @@ import { GlobalError } from "./utils/error";
 import router from "./routes";
 import { userContainerSuperUserInit } from "./model/userModel";
 import loggerWithNameSpace from "./utils/logger";
+import helmet from "helmet";
+import rateLimiter from "express-rate-limit";
 
 const app = express();
+
+const limiter = rateLimiter({
+  windowMs: 60 * 1000,
+  limit: 10,
+  message: "Too many requests",
+});
+
+app.use(helmet());
+
+app.use(limiter);
+
 app.use(express.json());
 
 app.use("/api", router);

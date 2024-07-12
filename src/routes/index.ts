@@ -4,7 +4,6 @@ import { userAuthRouter, userRouter } from "./userRoutes";
 
 const router = Router();
 
-router.use("/todo", todoRouter);
 router.use("/user", userRouter);
 router.use("/auth", userAuthRouter);
 
