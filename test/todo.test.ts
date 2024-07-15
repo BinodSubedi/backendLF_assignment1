@@ -2,6 +2,7 @@ import expect from "expect";
 import sinon from "sinon";
 import * as todo from "../src/model/todoModel";
 import * as todoServices from "../src/services/todoServices";
+import { TodoUpdateError } from "../src/utils/error";
 
 describe("Get Todo", () => {
   let idExistsStub: sinon.SinonStub;
@@ -78,6 +79,74 @@ describe("Delete Todo", () => {
 
     expect(idExistsStub.callCount).toBe(1);
     expect(removeOneTodoStub.callCount).toBe(1);
+
+    expect(idExistsStub.getCall(0).args).toEqual([1]);
+  });
+});
+
+describe("Update Todo", () => {
+  let idExistsStub: sinon.SinonStub;
+  let updateTodoStub: sinon.SinonStub;
+
+  before(() => {
+    idExistsStub = sinon.stub(todo, "idExists");
+    updateTodoStub = sinon.stub(todo, "updateTodo");
+  });
+
+  afterEach(() => {
+    idExistsStub.reset();
+    updateTodoStub.reset();
+  });
+
+  after(() => {
+    idExistsStub.restore();
+    updateTodoStub.restore();
+  });
+
+  it("Complete Todo task service err", () => {
+    const returnVal = [
+      true,
+      {
+        id: 1,
+        userId: 1,
+        title: "Hello",
+        description: "Hello description",
+      },
+    ];
+
+    idExistsStub.returns(returnVal);
+
+    updateTodoStub.throws(new Error());
+
+    try {
+      todoServices.finishTodoService(1);
+    } catch (err) {
+      expect(err).toBeInstanceOf(TodoUpdateError);
+    }
+    expect(idExistsStub.callCount).toBe(1);
+    expect(updateTodoStub.callCount).toBe(1);
+
+    expect(idExistsStub.getCall(0).args).toEqual([1]);
+  });
+
+  it("Complete Todo task service success", () => {
+    const returnVal = [
+      true,
+      {
+        id: 1,
+        userId: 1,
+        title: "Hello",
+        description: "Hello description",
+      },
+    ];
+
+    idExistsStub.returns(returnVal);
+
+    const updatetodo = todoServices.finishTodoService(1);
+
+    expect(updatetodo).toBe(true);
+    expect(idExistsStub.callCount).toBe(1);
+    expect(updateTodoStub.callCount).toBe(1);
 
     expect(idExistsStub.getCall(0).args).toEqual([1]);
   });
