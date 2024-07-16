@@ -1,3 +1,20 @@
+import { Request, Response, NextFunction } from "express";
+import loggerWithNameSpace from "./logger";
+
+export const globalErrorHandler = (
+  err: GlobalError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const logger = loggerWithNameSpace("Error handler");
+  logger.error(err.name);
+  res.status(err.statusCode).json({
+    status: "fail",
+    message: err.message,
+  });
+};
+
 export class GlobalError extends Error {
   public name: string;
   public stack?: string;

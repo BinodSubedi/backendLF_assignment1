@@ -1,8 +1,8 @@
 import expect from "expect";
 import sinon from "sinon";
-import * as todo from "../src/model/todoModel";
-import * as todoServices from "../src/services/todoServices";
-import { TodoUpdateError } from "../src/utils/error";
+import * as todo from "../../src/model/todoModel";
+import * as todoServices from "../../src/services/todoServices";
+import { TodoUpdateError } from "../../src/utils/error";
 
 describe("Get Todo", () => {
   let idExistsStub: sinon.SinonStub;

@@ -1,9 +1,9 @@
 import expect from "expect";
 import sinon from "sinon";
-import * as user from "../src/model/userModel";
-import * as userServices from "../src/services/userService";
+import * as user from "../../src/model/userModel";
+import * as userServices from "../../src/services/userService";
 import bcrypt from "bcrypt";
-import { UpdateError } from "../src/utils/error";
+import { UpdateError } from "../../src/utils/error";
 
 describe("User Create Service", () => {
   let createNewUserModelStub: sinon.SinonStub;
