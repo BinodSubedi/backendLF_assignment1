@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 
-const TABLE_NAME = "user";
+const TABLE_NAME = "TODO";
 
 /**
  * Create table TABLE_NAME.
@@ -12,12 +12,19 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable(TABLE_NAME, (table) => {
     table.bigIncrements("id").primary();
 
+    table.integer("userId").unsigned().notNullable();
     table.timestamp("created_at").notNullable().defaultTo(knex.raw("now()"));
-    table.string("username", 25).notNullable();
-    table.string("email", 30).notNullable();
-    table.string("password", 100).notNullable();
-    table.string("refreshToken", 100).notNullable();
-    table.string("accessLevel", 100).notNullable();
+
+    table
+      .foreign("userId")
+      .references("id")
+      .inTable("user")
+      .onDelete("CASCADE");
+
+    table.string("title", 30).notNullable();
+    table.string("description", 50).notNullable();
+    table.boolean("finished").notNullable();
+    table.timestamp("finished_at").nullable();
   });
 }
 
